@@ -1,13 +1,59 @@
 <resources>
     <string name="app_name">SleepCare</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_subtitle">Monitorea y mejora tu descanso</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="navigation_drawer_open">Abrir menú de navegación</string>
+    <string name="navigation_drawer_close">Cerrar menú de navegación</string>
+    <string name="nav_header_title">SleepCare</string>
+    <string name="nav_header_subtitle">Bienvenido</string>
+    <string name="nav_header_desc">Encabezado de navegación</string>
+    <string name="action_settings">Configuración</string>
+
+    <string name="menu_home">Inicio</string>
+    <string name="menu_monitoring">Monitoreo</string>
+    <string name="menu_history">Historial</string>
+    <string name="menu_reports">Reportes</string>
+    <string name="menu_settings">Ajustes</string>
+
+    <string name="home_title">Inicio</string>
+    <string name="monitoring_title">Monitoreo Activo</string>
+    <string name="report_title">Reporte de Sueño</string>
+    <string name="history_title">Historial</string>
+
+    <string name="start_monitoring">Iniciar Monitoreo</string>
+    <string name="stop_monitoring">Detener Monitoreo</string>
+    <string name="view_report">Ver Reporte</string>
+    <string name="view_history">Ver Historial</string>
+    <string name="save_note">Guardar Nota</string>
+
+    <string name="monitoring_active">Monitoreo activo</string>
+    <string name="monitoring_inactive">Monitoreo inactivo</string>
+    <string name="last_session">Última sesión: %1$s</string>
+    <string name="no_previous_sessions">No hay sesiones anteriores</string>
+
+    <string name="sensor_microphone">Micrófono</string>
+    <string name="sensor_accelerometer">Acelerómetro</string>
+    <string name="sensor_light">Sensor de Luz</string>
+    <string name="sensor_status_active">Activo</string>
+    <string name="sensor_status_inactive">Inactivo</string>
+
+    <string name="sleep_duration">Duración del sueño</string>
+    <string name="sleep_quality">Calidad del sueño</string>
+    <string name="deep_sleep">Sueño profundo</string>
+    <string name="light_sleep">Sueño ligero</string>
+    <string name="rem_sleep">Sueño REM</string>
+    <string name="awake_time">Tiempo despierto</string>
+    <string name="snoring_events">Eventos de ronquidos</string>
+    <string name="movement_events">Movimientos</string>
+
+    <string name="notification_channel_name">Monitoreo de Sueño</string>
+    <string name="notification_channel_description">Notificaciones del monitoreo de sueño activo</string>
+    <string name="notification_title">SleepCare - Monitoreo activo</string>
+    <string name="notification_text">Tocá para ver el estado actual</string>
+
+    <string name="loading">Cargando…</string>
+    <string name="error_generic">Ocurrió un error. Por favor, inténtalo de nuevo.</string>
+    <string name="permission_required">Se requiere permiso para continuar</string>
+    <string name="permission_rationale">Necesitamos acceso a los sensores para monitorear tu sueño correctamente.</string>
+    <string name="grant_permission">Conceder permiso</string>
 </resources>
