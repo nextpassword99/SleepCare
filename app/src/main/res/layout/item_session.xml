@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="8dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
+    app:cardUseCompatPadding="true"
+    app:rippleColor="@color/purple_100">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+        <!-- Fecha y hora -->
+        <TextView
+            android:id="@+id/sessionDateText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="12 de septiembre, 2023"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/sessionTimeText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/sessionTimeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="22:30 - 06:15"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Puntuación de sueño -->
+        <View
+            android:id="@+id/scoreContainer"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/circle_background_purple_light"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sessionDateText">
+
+            <TextView
+                android:id="@+id/sleepScoreText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="82"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </View>
+
+        <!-- Detalles de sueño -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@id/arrowIcon"
+            app:layout_constraintStart_toEndOf="@id/scoreContainer"
+            app:layout_constraintTop_toTopOf="@id/scoreContainer">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/sleep_duration"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/sleepDurationText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="7h 45m"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/sleep_quality"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/sleepQualityText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/good"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Icono de flecha -->
+        <ImageView
+            android:id="@+id/arrowIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="@string/view_details"
+            android:src="@drawable/ic_chevron_right"
+            android:tint="@android:color/darker_gray"
+            app:layout_constraintBottom_toBottomOf="@id/scoreContainer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/scoreContainer" />
+
+        <!-- Etiquetas -->
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/tagsChipGroup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:singleLine="true"
+            app:singleSelection="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/scoreContainer"
+            app:layout_constraintTop_toBottomOf="@id/scoreContainer">
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.MaterialComponents.Chip.Entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/snoring_detected"
+                android:textSize="10sp"
+                app:chipBackgroundColor="@color/red_50"
+                app:chipStrokeColor="@color/red_100"
+                app:chipStrokeWidth="1dp"
+                app:rippleColor="@color/red_100"
+                app:chipIcon="@drawable/ic_snoring"
+                app:chipIconTint="@color/red_500"
+                app:chipIconSize="12dp"
+                app:chipMinHeight="24dp"
+                app:closeIconVisible="false" />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Widget.MaterialComponents.Chip.Entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/restless_night"
+                android:textSize="10sp"
+                app:chipBackgroundColor="@color/orange_50"
+                app:chipStrokeColor="@color/orange_100"
+                app:chipStrokeWidth="1dp"
+                app:rippleColor="@color/orange_100"
+                app:chipIcon="@drawable/ic_movement"
+                app:chipIconTint="@color/orange_500"
+                app:chipIconSize="12dp"
+                app:chipMinHeight="24dp"
+                app:closeIconVisible="false" />
+        </com.google.android.material.chip.ChipGroup>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
