@@ -66,9 +66,11 @@ class SleepMonitoringService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.d(TAG, "onStartCommand received action: ${intent?.action}")
         when (intent?.action) {
             ACTION_START_MONITORING -> startMonitoring()
             ACTION_STOP_MONITORING -> stopMonitoring()
+            else -> Log.w(TAG, "Unknown action received: ${intent?.action}")
         }
         return START_STICKY
     }
@@ -84,6 +86,20 @@ class SleepMonitoringService : Service() {
             soundMonitor.start()
             movementSensor.start()
             lightSensor.start()
+
+            // Add checks to see if sensors actually started
+            if (!soundMonitor.isMonitoring()) {
+                Log.w(TAG, "Sound monitoring failed to start.")
+                // Potentially inform the user or disable sound-related features
+            }
+            if (!movementSensor.isMonitoring()) {
+                Log.w(TAG, "Movement monitoring failed to start.")
+                // Potentially inform the user or disable movement-related features
+            }
+            if (!lightSensor.isMonitoring()) {
+                Log.w(TAG, "Light monitoring failed to start.")
+                // Potentially inform the user or disable light-related features
+            }
 
             monitoringJob = serviceScope.launch {
                 try {
