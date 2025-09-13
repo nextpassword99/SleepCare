@@ -31,15 +31,7 @@ data class SleepAnalysis(
     val averageHeartRate: Float = 0f,
     val sleepStages: Map<SleepStage, Int> = emptyMap()
 ) {
-    /**
-     * Enum que representa las diferentes etapas del sueño.
-     */
-    enum class SleepStage {
-        AWAKE,
-        LIGHT,
-        DEEP,
-        REM
-    }
+    
 
     /**
      * Calcula el porcentaje de tiempo pasado en una etapa específica del sueño.
