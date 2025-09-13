@@ -61,9 +61,6 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-
     val workVersion = rootProject.extra["work_version"] as String
     implementation("androidx.work:work-runtime-ktx:$workVersion")
 
@@ -76,8 +73,6 @@ dependencies {
     implementation("com.jakewharton.timber:timber:5.0.1")
 
     implementation("com.google.code.gson:gson:2.10.1")
-
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
