@@ -49,6 +49,7 @@
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="microphone|dataSync"
+            android:directBootAware="true"
             android:stopWithTask="false" />
             
         <!-- Receiver para iniciar el servicio al arranque del dispositivo -->

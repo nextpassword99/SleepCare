@@ -66,40 +66,84 @@ class SleepMonitoringService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d(TAG, "onStartCommand received action: ${intent?.action}")
-        when (intent?.action) {
-            ACTION_START_MONITORING -> startMonitoring()
-            ACTION_STOP_MONITORING -> stopMonitoring()
-            else -> Log.w(TAG, "Unknown action received: ${intent?.action}")
+        try {
+            Log.d(TAG, "onStartCommand received. Action: ${intent?.action}, Flags: $flags, StartId: $startId")
+            
+            if (intent == null) {
+                Log.w(TAG, "Intent is null. Service may have been restarted by the system.")
+                // If the service is killed by the system, try to restart monitoring if it was active
+                if (isMonitoring.value) {
+                    Log.d(TAG, "Service was restarted while monitoring was active. Restarting monitoring...")
+                    startMonitoring()
+                }
+                return START_STICKY
+            }
+            
+            when (intent.action) {
+                ACTION_START_MONITORING -> {
+                    Log.d(TAG, "Starting monitoring from onStartCommand")
+                    startMonitoring()
+                }
+                ACTION_STOP_MONITORING -> {
+                    Log.d(TAG, "Stopping monitoring from onStartCommand")
+                    stopMonitoring()
+                }
+                else -> Log.w(TAG, "Unknown action received: ${intent.action}")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error in onStartCommand: ${e.message}", e)
+            // Try to recover by stopping the service if there's an error
+            stopSelf()
         }
-        return START_STICKY
+        
+        // Use START_REDELIVER_INTENT to ensure the intent is redelivered if the service is killed
+        return START_REDELIVER_INTENT
     }
 
     private fun startMonitoring() {
-        if (isMonitoring.value) return
+        Log.d(TAG, "Attempting to start monitoring...")
+        if (isMonitoring.value) {
+            Log.d(TAG, "Monitoring is already active.")
+            return
+        }
 
         try {
+            // Start as foreground service first
+            val notification = createNotification(getString(R.string.notification_text))
+            startForeground(NOTIFICATION_ID, notification)
+            Log.d(TAG, "Foreground service started.")
+            
+            // Acquire wake lock
+            if (!wakeLock.isHeld) {
+                wakeLock.acquire(10 * 60 * 1000L /*10 minutes*/)
+                Log.d(TAG, "Wake lock acquired.")
+            }
+
+            // Start sensors
+            try {
+                soundMonitor.start()
+                Log.d(TAG, "Sound monitor started.")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to start sound monitor: ${e.message}", e)
+            }
+
+            try {
+                movementSensor.start()
+                Log.d(TAG, "Movement sensor started.")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to start movement sensor: ${e.message}", e)
+            }
+
+            try {
+                lightSensor.start()
+                Log.d(TAG, "Light sensor started.")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to start light sensor: ${e.message}", e)
+            }
+
+            // Update monitoring state
             isMonitoring.value = true
-            startForeground(NOTIFICATION_ID, createNotification(getString(R.string.notification_title))) // Use string resource
-            wakeLock.acquire(10 * 60 * 1000L /*10 minutes*/)
-
-            soundMonitor.start()
-            movementSensor.start()
-            lightSensor.start()
-
-            // Add checks to see if sensors actually started
-            if (!soundMonitor.isMonitoring()) {
-                Log.w(TAG, "Sound monitoring failed to start.")
-                // Potentially inform the user or disable sound-related features
-            }
-            if (!movementSensor.isMonitoring()) {
-                Log.w(TAG, "Movement monitoring failed to start.")
-                // Potentially inform the user or disable movement-related features
-            }
-            if (!lightSensor.isMonitoring()) {
-                Log.w(TAG, "Light monitoring failed to start.")
-                // Potentially inform the user or disable light-related features
-            }
+            Log.d(TAG, "Monitoring state set to active.")
 
             monitoringJob = serviceScope.launch {
                 try {
@@ -126,18 +170,55 @@ class SleepMonitoringService : Service() {
     }
 
     private fun stopMonitoring() {
-        if (!isMonitoring.value) return
+        Log.d(TAG, "Attempting to stop monitoring...")
+        if (!isMonitoring.value) {
+            Log.d(TAG, "Monitoring is not active, nothing to stop.")
+            return
+        }
 
         try {
+            // Update monitoring state first to prevent race conditions
             isMonitoring.value = false
-            monitoringJob?.cancel()
+            Log.d(TAG, "Monitoring state set to inactive.")
+            
+            // Cancel the monitoring job
+            monitoringJob?.let {
+                if (it.isActive) {
+                    it.cancel()
+                    Log.d(TAG, "Monitoring job cancelled.")
+                }
+            }
 
-            soundMonitor.stop()
-            movementSensor.stop()
-            lightSensor.stop()
+            // Stop all sensors with error handling
+            try {
+                soundMonitor.stop()
+                Log.d(TAG, "Sound monitor stopped.")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error stopping sound monitor: ${e.message}", e)
+            }
 
+            try {
+                movementSensor.stop()
+                Log.d(TAG, "Movement sensor stopped.")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error stopping movement sensor: ${e.message}", e)
+            }
+
+            try {
+                lightSensor.stop()
+                Log.d(TAG, "Light sensor stopped.")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error stopping light sensor: ${e.message}", e)
+            }
+
+            // Release wake lock if held
             if (wakeLock.isHeld) {
-                wakeLock.release()
+                try {
+                    wakeLock.release()
+                    Log.d(TAG, "Wake lock released.")
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error releasing wake lock: ${e.message}", e)
+                }
             }
 
             serviceScope.launch {
