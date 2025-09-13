@@ -30,7 +30,7 @@
                 android:layout_height="80dp"
                 android:contentDescription="@string/monitoring_active"
                 android:src="@drawable/ic_night_sleep"
-                android:tint="@color/purple_500" />
+                app:tint="@color/purple_500" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -149,7 +149,7 @@
                         android:layout_height="24dp"
                         android:contentDescription="@string/sensor_microphone"
                         android:src="@drawable/ic_mic"
-                        android:tint="@color/purple_500" />
+                        app:tint="@color/purple_500" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -187,7 +187,7 @@
                         android:layout_height="24dp"
                         android:contentDescription="@string/sensor_accelerometer"
                         android:src="@drawable/ic_movement"
-                        android:tint="@color/purple_500" />
+                        app:tint="@color/purple_500" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -225,7 +225,7 @@
                         android:layout_height="24dp"
                         android:contentDescription="@string/sensor_light"
                         android:src="@drawable/ic_light"
-                        android:tint="@color/purple_500" />
+                        app:tint="@color/purple_500" />
 
                     <TextView
                         android:layout_width="0dp"
