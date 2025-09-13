@@ -46,8 +46,8 @@ class SleepMonitoringService : Service() {
     companion object {
         private const val NOTIFICATION_ID = 1001
         private const val CHANNEL_ID = "SleepCareMonitoringChannel"
-        private const val ACTION_START_MONITORING = "ACTION_START_MONITORING"
-        private const val ACTION_STOP_MONITORING = "ACTION_STOP_MONITORING"
+        const val ACTION_START_MONITORING = "ACTION_START_MONITORING"
+        const val ACTION_STOP_MONITORING = "ACTION_STOP_MONITORING"
         
         // Umbrales
         private const val SNORING_THRESHOLD = 60f // dB
