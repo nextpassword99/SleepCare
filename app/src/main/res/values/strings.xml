@@ -18,7 +18,25 @@
     <string name="home_title">Inicio</string>
     <string name="monitoring_title">Monitoreo Activo</string>
     <string name="report_title">Reporte de Sueño</string>
-    <string name="history_title">Historial</string>
+
+    <string name="history_title">Historial de Sueño</string>
+    <string name="search_sessions">Buscar sesiones</string>
+    <string name="filter_all">Todas</string>
+    <string name="this_week">Esta semana</string>
+    <string name="this_month">Este mes</string>
+    <string name="last_3_months">Últimos 3 meses</string>
+    <string name="no_sessions">No hay sesiones registradas</string>
+    <string name="session_duration">Duración: %1$s</string>
+    <string name="sleep_score">Puntuación: %1$d/100</string>
+
+    <string name="custom">Personalizado</string>
+    <string name="sleep_trends">Tendencias de sueño</string>
+    <string name="no_sessions_found">No se encontraron sesiones</string>
+    <string name="no_sessions_found_desc">Inicia un monitoreo para ver tus estadísticas de sueño</string>
+    <string name="advanced_filters">Filtros avanzados</string>
+
+    <string name="monitoring_status">Estado del monitoreo</string>
+    <string name="last_analysis">Último análisis</string>
 
     <string name="start_monitoring">Iniciar Monitoreo</string>
     <string name="stop_monitoring">Detener Monitoreo</string>
@@ -37,6 +55,13 @@
     <string name="sensor_status_active">Activo</string>
     <string name="sensor_status_inactive">Inactivo</string>
 
+    <string name="tip">Consejo</string>
+    <string name="default_tip">Mantén tu habitación oscura y fresca para un mejor descanso</string>
+    <string name="elapsed_time">Tiempo transcurrido</string>
+    <string name="sensors_status">Estado de los sensores</string>
+    <string name="activity_graph">Gráfico de actividad</string>
+    <string name="movements">Movimientos</string>
+
     <string name="sleep_duration">Duración del sueño</string>
     <string name="sleep_quality">Calidad del sueño</string>
     <string name="deep_sleep">Sueño profundo</string>
@@ -45,6 +70,22 @@
     <string name="awake_time">Tiempo despierto</string>
     <string name="snoring_events">Eventos de ronquidos</string>
     <string name="movement_events">Movimientos</string>
+
+    <string name="sleep_summary">Resumen del sueño</string>
+    <string name="time_to_sleep">Tiempo para dormir</string>
+    <string name="sleep_stages">Etapas del sueño</string>
+    <string name="awake">Despierto</string>
+    <string name="sleep_statistics">Estadísticas de sueño</string>
+    <string name="recommendations">Recomendaciones</string>
+    <string name="default_recommendations">• Mantén un horario de sueño consistente\n• Evita la cafeína antes de dormir\n• Crea un ambiente oscuro y fresco en tu habitación</string>
+    <string name="view_more">Ver más</string>
+    <string name="good">Bueno</string>
+    <string name="view_details">Ver detalles</string>
+    <string name="snoring_detected">Ronquidos detectados</string>
+    <string name="restless_night">Noche inquieta</string>
+
+    <string name="menu_gallery">Galería</string>
+    <string name="menu_slideshow">Presentación</string>
 
     <string name="notification_channel_name">Monitoreo de Sueño</string>
     <string name="notification_channel_description">Notificaciones del monitoreo de sueño activo</string>
