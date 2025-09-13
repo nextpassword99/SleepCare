@@ -48,15 +48,21 @@ class SleepMonitoringService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        repository = (application as SleepCareApplication).repository
-        soundMonitor = SoundMonitor(this)
-        movementSensor = MovementSensor(this)
-        lightSensor = LightSensor(this)
+        try {
+            repository = (application as SleepCareApplication).repository
+            soundMonitor = SoundMonitor(this)
+            movementSensor = MovementSensor(this)
+            lightSensor = LightSensor(this)
 
-        val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "SleepCare::WakeLock")
+            val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+            wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "SleepCare::WakeLock")
 
-        createNotificationChannel()
+            createNotificationChannel()
+            Log.d(TAG, "Service onCreate successful.")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error during service onCreate: ${e.message}", e)
+            stopSelf() // Stop the service if initialization fails
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -70,88 +76,126 @@ class SleepMonitoringService : Service() {
     private fun startMonitoring() {
         if (isMonitoring.value) return
 
-        isMonitoring.value = true
-        startForeground(NOTIFICATION_ID, createNotification("Monitoring Sleep"))
-        wakeLock.acquire(10 * 60 * 1000L /*10 minutes*/)
+        try {
+            isMonitoring.value = true
+            startForeground(NOTIFICATION_ID, createNotification(getString(R.string.notification_title))) // Use string resource
+            wakeLock.acquire(10 * 60 * 1000L /*10 minutes*/)
 
-        soundMonitor.start()
-        movementSensor.start()
-        lightSensor.start()
+            soundMonitor.start()
+            movementSensor.start()
+            lightSensor.start()
 
-        monitoringJob = serviceScope.launch {
-            val session = SleepSessionEntity(startTime = Date())
-            currentSessionId = repository.insertSession(session)
+            monitoringJob = serviceScope.launch {
+                try {
+                    val session = SleepSessionEntity(startTime = Date())
+                    currentSessionId = repository.insertSession(session)
+                    Log.d(TAG, "New sleep session started with ID: $currentSessionId")
 
-            while (isMonitoring.value) {
-                collectSensorData()
-                analyzeSleepStage()
-                delay(5000)
+                    while (isMonitoring.value) {
+                        collectSensorData()
+                        analyzeSleepStage()
+                        delay(5000)
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error during monitoring job: ${e.message}", e)
+                    stopMonitoring() // Stop monitoring on error
+                }
             }
+            Log.d(TAG, "Monitoring started.")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error starting monitoring: ${e.message}", e)
+            isMonitoring.value = false
+            stopSelf() // Stop the service if starting fails
         }
     }
 
     private fun stopMonitoring() {
         if (!isMonitoring.value) return
 
-        isMonitoring.value = false
-        monitoringJob?.cancel()
+        try {
+            isMonitoring.value = false
+            monitoringJob?.cancel()
 
-        soundMonitor.stop()
-        movementSensor.stop()
-        lightSensor.stop()
+            soundMonitor.stop()
+            movementSensor.stop()
+            lightSensor.stop()
 
-        if (wakeLock.isHeld) {
-            wakeLock.release()
-        }
+            if (wakeLock.isHeld) {
+                wakeLock.release()
+            }
 
-        serviceScope.launch {
-            currentSessionId?.let {
-                repository.getSessionById(it)?.let {
-                    val updatedSession = it.copy(endTime = Date())
-                    repository.updateSession(updatedSession)
+            serviceScope.launch {
+                try {
+                    currentSessionId?.let {
+                        repository.getSessionById(it)?.let {
+                            val updatedSession = it.copy(endTime = Date())
+                            repository.updateSession(updatedSession)
+                            Log.d(TAG, "Sleep session $it updated with end time.")
+                        } ?: Log.w(TAG, "Session with ID $it not found for update.")
+                    } ?: Log.w(TAG, "currentSessionId is null when trying to stop monitoring.")
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error updating session on stop: ${e.message}", e)
                 }
             }
-        }
 
-        stopForeground(true)
-        stopSelf()
+            stopForeground(true)
+            stopSelf()
+            Log.d(TAG, "Monitoring stopped.")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error stopping monitoring: ${e.message}", e)
+        }
     }
 
     private suspend fun collectSensorData() {
-        val soundLevel = soundMonitor.getCurrentSoundLevel()
-        val movementLevel = movementSensor.getCurrentMovement()
-        val lightLevel = lightSensor.getCurrentLightLevel()
+        try {
+            val soundLevel = soundMonitor.getCurrentSoundLevel()
+            val movementLevel = movementSensor.getCurrentMovement()
+            val lightLevel = lightSensor.getCurrentLightLevel()
 
-        val data = SensorDataEntity(
-            sessionId = currentSessionId ?: 0,
-            timestamp = Date(),
-            soundLevel = soundLevel,
-            movementX = movementLevel, // This should be separated into X, Y, Z
-            lightLevel = lightLevel
-        )
-        currentData.value = data
-        repository.insertSensorData(data)
+            val data = SensorDataEntity(
+                sessionId = currentSessionId ?: 0,
+                timestamp = Date(),
+                soundLevel = soundLevel,
+                movementX = movementLevel, // This should be separated into X, Y, Z
+                lightLevel = lightLevel
+            )
+            currentData.value = data
+            repository.insertSensorData(data)
+            Log.d(TAG, "Sensor data collected: sound=$soundLevel, movement=$movementLevel, light=$lightLevel")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error collecting sensor data: ${e.message}", e)
+        }
     }
 
     private suspend fun analyzeSleepStage() {
-        val data = currentData.value ?: return
-        val thresholds = repository.run {
-            object {
-                val movement = movementThreshold.first()
-                val sound = soundThreshold.first()
-                val light = lightThreshold.first()
+        try {
+            val data = currentData.value ?: return
+            val thresholds = try {
+                repository.run {
+                    object {
+                        val movement = movementThreshold.first()
+                        val sound = soundThreshold.first()
+                        val light = lightThreshold.first()
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error retrieving thresholds: ${e.message}", e)
+                return // Exit if thresholds cannot be retrieved
             }
-        }
 
-        val newStage = when {
-            (data.movementX ?: 0f) > thresholds.movement -> SleepStage.AWAKE
-            (data.soundLevel ?: 0f) > thresholds.sound -> SleepStage.REM
-            (data.lightLevel ?: 0f) > thresholds.light -> SleepStage.LIGHT
-            else -> SleepStage.DEEP
-        }
+            val newStage = when {
+                (data.movementX ?: 0f) > thresholds.movement -> SleepStage.AWAKE
+                (data.soundLevel ?: 0f) > thresholds.sound -> SleepStage.REM
+                (data.lightLevel ?: 0f) > thresholds.light -> SleepStage.LIGHT
+                else -> SleepStage.DEEP
+            }
 
-        if (currentStage.value != newStage) {
-            currentStage.value = newStage
+            if (currentStage.value != newStage) {
+                currentStage.value = newStage
+                Log.d(TAG, "Sleep stage changed to: $newStage")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error analyzing sleep stage: ${e.message}", e)
         }
     }
 
@@ -186,11 +230,13 @@ class SleepMonitoringService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         stopMonitoring()
+        Log.d(TAG, "Service onDestroy.")
     }
 
     companion object {
         private const val NOTIFICATION_ID = 1
         private const val CHANNEL_ID = "SleepMonitoringChannel"
+        private const val TAG = "SleepMonitoringService"
 
         const val ACTION_START_MONITORING = "com.example.sleepcare.service.START_MONITORING"
         const val ACTION_STOP_MONITORING = "com.example.sleepcare.service.STOP_MONITORING"
