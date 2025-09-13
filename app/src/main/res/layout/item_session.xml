@@ -45,7 +45,7 @@
 
         <!-- Puntuación de sueño -->
         <FrameLayout
-            android:id="@+id/sleepScoreContainer"
+            android:id="@+id/scoreContainer"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginTop="12dp"
