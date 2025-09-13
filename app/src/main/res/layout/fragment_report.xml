@@ -87,7 +87,7 @@
                     android:orientation="horizontal">
 
                     <!-- Puntuación de sueño -->
-                    <View
+                    <FrameLayout
                         android:layout_width="0dp"
                         android:layout_height="120dp"
                         android:layout_weight="1"
@@ -103,7 +103,7 @@
                             android:textColor="@color/white"
                             android:textSize="36sp"
                             android:textStyle="bold" />
-                    </View>
+                    </FrameLayout>
 
                     <!-- Detalles de sueño -->
                     <LinearLayout
