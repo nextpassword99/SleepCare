@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.sleepcare.service.SleepMonitoringService
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import android.util.Log
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -28,9 +29,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         val intent = Intent(getApplication(), SleepMonitoringService::class.java)
         if (_isMonitoring.value == true) {
             intent.action = SleepMonitoringService.ACTION_STOP_MONITORING
+            Log.d("HomeViewModel", "Attempting to stop monitoring service.")
             getApplication<Application>().startService(intent)
         } else {
             intent.action = SleepMonitoringService.ACTION_START_MONITORING
+            Log.d("HomeViewModel", "Attempting to start monitoring service.")
             getApplication<Application>().startService(intent)
         }
     }
