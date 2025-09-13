@@ -44,10 +44,10 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Puntuación de sueño -->
-        <View
-            android:id="@+id/scoreContainer"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+        <FrameLayout
+            android:id="@+id/sleepScoreContainer"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginTop="12dp"
             android:background="@drawable/circle_background_purple_light"
             app:layout_constraintStart_toStartOf="parent"
@@ -62,7 +62,7 @@
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />
-        </View>
+        </FrameLayout>
 
         <!-- Detalles de sueño -->
         <LinearLayout
